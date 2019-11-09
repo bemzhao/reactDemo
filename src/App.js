@@ -17,8 +17,8 @@ class App extends React.Component {
   }
 
   componentDidMount () {
-  	axios.post('https://web-api.juejin.im/v3/web/wbbr/bgeda').then((res) => {
-  		console.log('success')
+  	axios.post('http://rap2api.taobao.org/app/mock/236179/person').then((res) => {
+  		console.log(res)
   	}).catch((error => {
   		console.log(error)
   	}))
