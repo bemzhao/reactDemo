@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import Menu from './Menu';
 
 class App extends React.Component {
@@ -13,6 +14,14 @@ class App extends React.Component {
     this.addMenu = this.addMenu.bind(this);
     this.inputChange = this.inputChange.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+  }
+
+  componentDidMount () {
+  	axios.post('https://web-api.juejin.im/v3/web/wbbr/bgeda').then((res) => {
+  		console.log('success')
+  	}).catch((error => {
+  		console.log(error)
+  	}))
   }
 
   render() {
