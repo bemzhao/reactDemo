@@ -1,79 +1,82 @@
-import React from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
-import Menu from './Menu';
+import Item from './item';
+import Bar from './bar';
 
-class App extends React.Component {
+class App extends Component {
 	constructor(props) {
-    super(props);
-    this.state = {
-    	inputValue: '',
-    	list: ["111", "222"]
-    };
-
-    // 为了在回调中使用 `this`，这个绑定是必不可少的
-    this.addMenu = this.addMenu.bind(this);
-    this.inputChange = this.inputChange.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
-  }
-
-  componentDidMount () {
-  	axios.post('http://rap2api.taobao.org/app/mock/236179/person').then((res) => {
-  		console.log(res)
-  	}).catch((error => {
-  		console.log(error)
-  	}))
-  }
-
-  render() {
-    return (
-      <div>
-        <input type="text" value={this.state.inputValue} onChange={this.inputChange} ref={(input) => {this.input = input}} name="" />
-        <button type="button" onClick={this.addMenu}>提交</button>
-        <ul>
-        	{
-        		this.state.list.map((item, index) => {
-        			return (
-        					<Menu key={index} content={item} index={index} deleteItem={this.deleteItem}/>
-        			)
-	        	})
-        	}
-        </ul>
-      </div>
-    );
-  }
-
-  addMenu () {
-  	// this.setState({
-  	// 	list: [...this.state.list, this.state.inputValue]
-  	// });
-  	if (this.state.inputValue === '') {
-  		alert("不能为空");
-  		return false;
-  	}
-
-  	this.setState((state) => {
-  		return {
-  			inputValue: '',
-  			list: state.list.concat(this.state.inputValue)
-  		};
-  	});
-
+		super(props);
+		this.state = {
+			inputValue: '',
+			lists: ["111", "222"]
+		};
 	}
 
-	inputChange (e) {
-  	this.setState({
-  		inputValue: this.input.value
-  	});
+	componentDidMount() {
+		axios.post('http://rap2api.taobao.org/app/mock/236179/person').then((res) => {
+			this.setState({
+				lists: res.data.lists
+			})
+		}).catch((error => {
+			console.log(error)
+		}))
 	}
 
-	deleteItem (index) {
-		// this.setState({
-		// 	state.list.splice(index,1);
-		// })
-		let list = this.state.list;
-		list.splice(index, 1);
+	render() {
+		return (
+			<div>
+			  <Bar 
+			    inputValue={this.state.inputValue} 
+			    onChange={this.inputChange} 
+			    onKeyUp={this.keycode} 
+			    addMenu={this.addMenu}
+			  />
+			  <ul>
+			    {
+			      this.state.lists.map((item, index) => {
+			        return (
+			          <Item 
+						key={index} 
+						content={item.name} 
+						index={index} 
+						handleClick={this.handleDelete.bind(this, index)}
+					  />
+			        )
+			      })
+			    }
+			  </ul>
+			</div>
+		)
+	}
+
+	keycode = (e) => {
+		if (e.keyCode === 13) {
+			this.addMenu()
+		}
+	}
+
+	inputChange = (e) => {
 		this.setState({
-			list: list
+			inputValue: e.target.value
+		})
+	}
+	addMenu = () => {
+		if (this.state.inputValue.trim() === '') {
+			alert("不能为空");
+			return false;
+		}
+		let lists = this.state.lists;
+		lists.push({name: this.state.inputValue});
+		this.setState({
+			inputValue: "",
+			lists: lists
+		})
+	}
+	handleDelete = (index) => {
+		let lists = this.state.lists;
+		lists.splice(index, 1);
+		this.setState({
+			lists: lists
 		})
 	}
 }
