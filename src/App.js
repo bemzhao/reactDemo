@@ -18,8 +18,6 @@ class App extends Component {
         "https://www.fastmock.site/mock/5ccb57d10c61ef8c09adf2806eedab94/api/list"
       )
       .then((res) => {
-        console.log(res.data.data.list);
-
         this.setState({
           lists: res.data.data.list
         });
